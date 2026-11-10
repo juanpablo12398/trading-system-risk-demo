@@ -18,6 +18,8 @@ señales o los datos del sistema privado.
 - Se informa MAE del modelo y de una referencia de persistencia. No se
   interpreta la diferencia como ventaja económica.
 - `pipeline.py` añade esta evaluación al ciclo conectado y a la traza.
+  Un control de muestra bloquea el camino de papel si el holdout tiene menos de
+  tres filas o si el error del modelo supera el de persistencia.
   `src/App.jsx` muestra los resultados devueltos por la API.
 
 ## Límites de publicación
@@ -32,7 +34,7 @@ acredita su desempeño.
 
 `test_predictive.py` verifica ajuste e inferencia, comparación con la línea
 de base, ausencia de influencia de valores futuros en el primer pronóstico,
-serie constante, entradas inválidas y presencia del resultado en el ciclo
+serie constante, entradas inválidas, bloqueo por calidad insuficiente y presencia del resultado en el ciclo
 FastAPI. La suite completa del repositorio se ejecuta en GitHub Actions.
 
 ## Criterios de aceptación
@@ -40,5 +42,7 @@ FastAPI. La suite completa del repositorio se ejecuta en GitHub Actions.
 1. Hay código y pruebas públicos de entrenamiento e inferencia sintéticos.
 2. El ciclo React → FastAPI → Python muestra las métricas reales de ese código.
 3. No aparecen datos, pesos ni reglas del sistema privado.
-4. El resultado no se presenta como una estrategia rentable o lista para
+4. Una calidad de holdout insuficiente bloquea el ciclo de papel; nunca habilita
+   órdenes reales.
+5. El resultado no se presenta como una estrategia rentable o lista para
    producción.

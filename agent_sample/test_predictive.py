@@ -4,6 +4,7 @@ import unittest
 
 from agent_sample.audit import MemoryAuditStore
 from agent_sample.pipeline import Scenario, run_demo
+from agent_sample.risk import evaluate_demo_gates
 from agent_sample.predictive import (
     evaluate_chronological_holdout,
     fit_lag_one,
@@ -44,6 +45,16 @@ class PredictiveSampleTests(unittest.TestCase):
         self.assertEqual(result["prediction"]["training_pairs"], 4)
         self.assertEqual(result["prediction"]["holdout_samples"], 3)
         self.assertTrue(any(event["kind"] == "Prediction" for event in result["trace"]))
+        self.assertTrue(any(check["name"] == "Synthetic model holdout quality" and check["passed"]
+                            for check in result["controls"]["checks"]))
+
+    def test_failed_model_validation_blocks_paper_path(self):
+        result = evaluate_demo_gates(
+            fresh=True, authority=True, exposure=35, complete_data=True,
+            review_kept=True, model_validated=False
+        )
+        self.assertFalse(result["allowed"])
+        self.assertFalse(result["live_orders"])
 
     def test_rejects_short_and_nonfinite_inputs(self):
         with self.assertRaises(ValueError):

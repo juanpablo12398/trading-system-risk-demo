@@ -14,7 +14,7 @@ La interfaz React ejecuta un **ciclo de papel** en una API Python/FastAPI. El ci
 | PostgreSQL y auditoría | [almacén JSONB](agent_sample/audit.py), [prueba integrada](agent_sample/test_full_sample.py) | La alternativa en memoria se indica en pantalla si no se configura PostgreSQL |
 | Modelo predictivo y ML | [entrenamiento e inferencia sobre índice ficticio](agent_sample/predictive.py), [pruebas de corte temporal](agent_sample/test_predictive.py) | Es una regresión mínima demostrativa; no expone el modelo, las variables ni el rendimiento privados |
 | Evaluación y backtesting | [métricas holdout y replay de papel](agent_sample/evaluation.py), pruebas de información futura y drawdown | Observaciones y aprobaciones son ficticias; no se publica el modelo privado |
-| Controles de riesgo y trazabilidad | [gates de demostración](agent_sample/risk.py), [pipeline](agent_sample/pipeline.py), [API](agent_sample/api_app.py) | El límite de exposición no corresponde al sistema real |
+| Controles de riesgo, calidad ML y trazabilidad | [gates de demostración](agent_sample/risk.py), [pipeline](agent_sample/pipeline.py), [API](agent_sample/api_app.py) | Frescura, autoridad, exposición, revisión y calidad del modelo bloquean el ciclo de papel; los umbrales no corresponden al sistema real |
 
 ## Ejecutar localmente
 
