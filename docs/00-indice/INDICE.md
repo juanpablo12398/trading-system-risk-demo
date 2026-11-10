@@ -15,4 +15,4 @@ El repositorio publica una consola React ilustrativa y una extracción Python de
 | 06 · Calidad | [Estrategia de pruebas](../06-calidad/ESTRATEGIA_TESTING.md) | Casos, comandos y límites. |
 | 07 · Publicación | [Guía de publicación](../05-despliegue/GUIA_PUBLICACION.md) | Bundle estático y validación previa. |
 
-**Evidencia:** `src/App.jsx`, `src/App.test.jsx`, `agent_sample/` con 21 tests Python, `docs/preview.png` y el workflow de CI.
+**Evidencia:** `src/App.jsx`, `src/App.test.jsx`, `agent_sample/` con 30 tests Python, `docs/preview.png` y el workflow de CI.

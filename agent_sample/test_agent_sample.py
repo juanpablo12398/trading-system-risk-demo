@@ -5,6 +5,7 @@ from agent_sample.agents import NewsReviewAgent
 from agent_sample.brain import SharedBrain
 from agent_sample.llm import ClaudeClient, InvalidResponseError, RetryableLLMError, parse_object
 from agent_sample.orchestrator import run_agents
+from agent_sample.reviewer import ReviewGuardAgent
 
 
 def run(coro):
@@ -237,6 +238,144 @@ class OrchestratorTests(unittest.TestCase):
             return "bad"
 
         self.assertEqual(run(run_agents({"bad": bad}))["results"]["bad"]["error_type"], "TypeError")
+
+
+class ReviewerTests(unittest.TestCase):
+    def test_rejected_item_never_reaches_llm(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                raise AssertionError("rejected item must not reach LLM")
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": False}]
+            )
+
+        result = run(scenario())
+        self.assertEqual(result["kept_ids"], [])
+        self.assertEqual(result["reviews"][0]["verdict"], "skipped")
+
+    def test_allow_keeps_preapproved_item(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                return '{"verdict":"allow"}'
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": True}]
+            )
+
+        self.assertEqual(run(scenario())["kept_ids"], ["a"])
+
+    def test_warning_keeps_but_marks_item(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                return '{"verdict":"warning"}'
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": True}]
+            )
+
+        result = run(scenario())
+        self.assertEqual(result["kept_ids"], ["a"])
+        self.assertEqual(result["reviews"][0]["verdict"], "warning")
+
+    def test_veto_removes_item(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                return '{"verdict":"veto"}'
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": True}]
+            )
+
+        self.assertEqual(run(scenario())["kept_ids"], [])
+
+    def test_unknown_verdict_requires_manual_review(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                return '{"verdict":"promote"}'
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": True}]
+            )
+
+        result = run(scenario())
+        self.assertEqual(result["kept_ids"], [])
+        self.assertEqual(result["reviews"][0]["verdict"], "manual_review")
+
+    def test_llm_failure_requires_manual_review(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                raise RuntimeError("offline")
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": True}]
+            )
+
+        self.assertEqual(run(scenario())["reviews"][0]["verdict"], "manual_review")
+
+    def test_reads_prior_agent_context(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+            await brain.store("sample/news", {"summary": "Public example"})
+
+            async def transport(prompt, *_):
+                self.assertIn("Public example", prompt)
+                return '{"verdict":"allow"}'
+
+            reviewer = ReviewGuardAgent(brain, ClaudeClient(transport))
+            result = await reviewer.run([{"id": "a", "preapproved": True}])
+            return result, await brain.recall(reviewer.namespace)
+
+        result, stored = run(scenario())
+        self.assertEqual(result, stored)
+
+    def test_duplicate_ids_rejected(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                return '{"verdict":"allow"}'
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "a", "preapproved": True}, {"id": "a", "preapproved": True}]
+            )
+
+        with self.assertRaises(ValueError):
+            run(scenario())
+
+    def test_mixed_batch_cannot_promote_rejected(self):
+        async def scenario():
+            brain = SharedBrain()
+            await brain.init_cycle()
+
+            async def transport(*_):
+                return '{"verdict":"allow"}'
+
+            return await ReviewGuardAgent(brain, ClaudeClient(transport)).run(
+                [{"id": "approved", "preapproved": True}, {"id": "rejected", "preapproved": False}]
+            )
+
+        self.assertEqual(run(scenario())["kept_ids"], ["approved"])
 
 
 if __name__ == "__main__":

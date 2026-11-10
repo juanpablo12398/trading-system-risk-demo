@@ -7,6 +7,7 @@ La consola React 001 no prueba el trabajo con agentes declarado en el CV. Este r
 ## Componentes
 
 - `NewsReviewAgent`: obtiene fuentes inyectadas concurrentemente, tolera una fuente caída, deduplica titulares, solicita JSON al LLM y guarda resultado por namespace.
+- `ReviewGuardAgent`: revisa solo entradas preaprobadas; acepta, advierte, veta o pide revisión manual, sin poder promover las rechazadas.
 - `ClaudeClient`: transporte asíncrono inyectable, timeout, hasta tres intentos ante fallos transitorios y validación estricta de objeto JSON. `AnthropicTransport` es un adaptador opcional al SDK real; los tests no lo instancian.
 - `SharedBrain`: memoria en proceso aislada por ciclo mediante `ContextVar`, con copias de entrada/salida.
 - `run_agents`: fan-out con `asyncio.gather`, timeout por agente, resultado de error sin exponer mensajes y conteo final.
@@ -17,7 +18,8 @@ La consola React 001 no prueba el trabajo con agentes declarado en el CV. Este r
 2. Provee funciones de fuentes y transporte; no hay red por defecto.
 3. El agente consulta fuentes y llama al LLM solo con datos presentes.
 4. Si el JSON no cumple contrato o el transporte falla, guarda `status=error`; no produce una señal aprobada.
-5. El orquestador aísla el fallo de un agente y conserva el resultado de los demás.
+5. El revisor usa el contexto previo, pero solo ve entradas preaprobadas; una respuesta inesperada requiere revisión manual.
+6. El orquestador aísla el fallo de un agente y conserva el resultado de los demás.
 
 ## Seguridad y límites
 
@@ -25,7 +27,7 @@ No hay órdenes, exchange, estrategia ni umbrales. Los titulares en pruebas son 
 
 ## Pruebas y criterios
 
-Los 21 tests Python incluyen: respuesta JSON directa y cercada, rechazo de JSON inválido y arrays, llamada LLM simulada, reintentos agotados, timeout, aislamiento de memoria entre tareas, agente sin datos, fuente caída, respuesta LLM incompleta, paralelismo real, fallo y timeout de agentes. Se ejecutan en CI junto con los 8 tests React.
+Los 30 tests Python incluyen: respuesta JSON directa y cercada, rechazo de JSON inválido y arrays, llamada LLM simulada, reintentos agotados, timeout, aislamiento de memoria entre tareas, agente sin datos, fuente caída, respuesta LLM incompleta, paralelismo real, fallo y timeout de agentes. Nueve casos del revisor verifican preaprobación, veto, advertencia, revisión manual, contexto previo e IDs únicos. Se ejecutan en CI junto con los 8 tests React.
 
 ## Trazabilidad
 
