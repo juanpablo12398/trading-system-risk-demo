@@ -12,7 +12,7 @@ Esta muestra se adaptó del proyecto experimental de Juan Pablo Verdondoni. No e
 | `agent_sample/agents.py` | Agente de noticias | Fuentes concurrentes, fallo parcial, deduplicación, análisis LLM y escritura al brain |
 | `agent_sample/reviewer.py` | Revisor LLM acotado | Solo recibe entradas preaprobadas; puede advertir o vetar, nunca promover una rechazada |
 
-La muestra reemplaza PostgreSQL, RSS y SQLite por fuentes inyectadas y memoria en proceso. El cliente privado registra tokens y presupuesto; la muestra no demuestra esas funciones. El código de producción usa prompts, fuentes, modelo de datos y agentes adicionales que aquí no se incluyen.
+El recorrido usa fuentes y respuestas LLM ficticias; la memoria por ciclo reside en proceso y el historial de auditoría puede usar PostgreSQL. El cliente privado registra tokens y presupuesto; la muestra no demuestra esas funciones. El código de producción usa prompts, fuentes, modelo de datos y agentes adicionales que aquí no se incluyen.
 
 ## Flujo verificable
 
@@ -27,4 +27,4 @@ La prueba usa un transporte falso: verifica la ruta LLM, reintentos, JSON invál
 
 ## Límites de publicación
 
-Se omitieron estrategia, umbrales, señales, prompts privados, fuentes reales, credenciales y ejecución de órdenes. La UI React sigue siendo ilustrativa y no recibe los resultados Python. No se afirma que estas 30 pruebas sustituyan los miles de tests del proyecto privado.
+Se omitieron estrategia, umbrales, señales, prompts privados, fuentes reales, credenciales y ejecución de órdenes. La UI React consume resultados de FastAPI generados por Python. El [modelo predictivo sintético](../../specs/004-synthetic-prediction/sdd.md) muestra entrenamiento e inferencia sin exponer el modelo privado. Las pruebas públicas no sustituyen la suite del proyecto privado.
