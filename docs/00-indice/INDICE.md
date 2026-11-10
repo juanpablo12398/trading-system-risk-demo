@@ -1,11 +1,11 @@
 # Documentación pública · Trading System
 
-Este repositorio muestra mecanismos adaptados del sistema privado con datos y umbrales inventados. El [SDD 003](../../specs/003-connected-paper-cycle/sdd.md) describe el estado integrado actual; los SDD anteriores registran etapas de construcción.
+Este repositorio muestra mecanismos adaptados del sistema privado con datos y umbrales inventados. El [SDD 003](../../specs/003-connected-paper-cycle/sdd.md) describe el ciclo conectado y el [SDD 004](../../specs/004-synthetic-prediction/sdd.md) añade la muestra predictiva. Los SDD anteriores registran etapas de construcción.
 
 | Sección | Documento | Propósito |
 | --- | --- | --- |
 | 01 · Alcance | [Especificación inicial](../../specs/001-public-risk-demo/spec.md) | Primer escenario ficticio y exclusiones. |
-| 02 · Diseño | [SDD 001](../../specs/001-public-risk-demo/sdd.md), [SDD 002](../../specs/002-public-agent-slice/sdd.md), [SDD 003](../../specs/003-connected-paper-cycle/sdd.md) | Evolución de consola, agentes y ciclo conectado. |
+| 02 · Diseño | [SDD 001](../../specs/001-public-risk-demo/sdd.md), [SDD 002](../../specs/002-public-agent-slice/sdd.md), [SDD 003](../../specs/003-connected-paper-cycle/sdd.md), [SDD 004](../../specs/004-synthetic-prediction/sdd.md) | Evolución de consola, agentes, ciclo conectado y predicción sintética. |
 | 02 · Arquitectura | [Extracción de agentes](../02-arquitectura/EXTRACCION_AGENTES.md) | Procedencia y límites de la muestra. |
 | 03 · Ejecución | [Plan inicial](../../specs/001-public-risk-demo/tasks.md), [guía local](../03-desarrollo/GUIA_LOCAL.md) | Comandos y estructura. |
 | 04 · Decisiones | [ADR 001](../08-adr/001-sin-ejecucion.md) | Ausencia de ruta de órdenes y evolución. |

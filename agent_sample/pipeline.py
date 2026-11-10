@@ -10,6 +10,7 @@ from .exchange import QuoteSource, collect_quotes
 from .fixtures import sample_holdout, sample_news, sample_rest, sample_websocket
 from .llm import ClaudeClient, Transport
 from .orchestrator import run_agents
+from .predictive import evaluate_chronological_holdout
 from .reviewer import ReviewGuardAgent
 from .risk import evaluate_demo_gates
 
@@ -61,6 +62,9 @@ async def run_demo(
     holdout = sample_holdout()
     evaluation = evaluate_holdout(holdout)
     backtest = replay_paper_decisions(holdout)
+    prediction = evaluate_chronological_holdout(
+        [10.0, 10.9, 11.4, 12.3, 12.9, 13.8, 14.5, 15.2], train_size=5
+    )
     controls = evaluate_demo_gates(
         fresh=scenario.fresh,
         authority=scenario.authority,
@@ -73,6 +77,7 @@ async def run_demo(
         {"kind": "Agents", "message": f"{orchestrated['ok_count']} of {orchestrated['total_count']} parallel agents completed"},
         {"kind": "Review", "message": reviewer["reviews"][0]["verdict"]},
         {"kind": "Evaluation", "message": f"{evaluation['samples']} synthetic holdout rows replayed"},
+        {"kind": "Prediction", "message": f"{prediction['training_pairs']} fictional training pairs; {prediction['holdout_samples']} later predictions"},
         {"kind": "Control", "message": "Paper path eligible" if controls["allowed"] else "Paper path blocked"},
     ]
     saved = await audit_store.append({
@@ -80,6 +85,7 @@ async def run_demo(
         "agents": orchestrated,
         "review": reviewer,
         "evaluation": evaluation,
+        "prediction": prediction,
         "backtest": backtest,
         "controls": controls,
         "trace": trace,
