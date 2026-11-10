@@ -151,11 +151,14 @@ export default function App() {
             </article>
             <article className="panel">
               <div className="panel-head"><div><span className="eyebrow">MODEL EVIDENCE</span><h2>Holdout and paper replay</h2></div></div>
+              <p>Predictive sample: {result.prediction?.model ?? "Unavailable"}</p>
+              <p>Training pairs: {result.prediction?.training_pairs ?? "—"} · Later predictions: {result.prediction?.holdout_samples ?? "—"}</p>
+              <p>Forecast MAE: {result.prediction?.mae ?? "—"} · Persistence baseline MAE: {result.prediction?.persistence_mae ?? "—"}</p>
               <p>Holdout observations: {result.evaluation.samples}</p>
               <p>Brier score: {result.evaluation.brier_score} · Accuracy: {result.evaluation.accuracy}</p>
               <p>Paper decisions: {result.backtest.paper_decisions}</p>
               <p>Paper return: {result.backtest.paper_return} · Max drawdown: {result.backtest.max_drawdown}</p>
-              <small>Fixed fictional observations; no model training, live prices or strategy disclosed.</small>
+              <small>A small model is trained on a fictional prefix; later rows are held out. The private model, features, live prices and strategy are excluded.</small>
             </article>
           </section>
         )}
