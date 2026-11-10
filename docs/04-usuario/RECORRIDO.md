@@ -1,10 +1,10 @@
-# Recorrido de la demo
+# Recorrido del ciclo de papel
 
-1. Ejecutar `npm ci` y `npm run dev`; abrir la dirección local de Vite.
-2. Observar `Simulation`, `DRY RUN Always on`, tres PASS y `Live orders Disabled`.
-3. Desmarcar `Market data is fresh`: la decisión cambia a `Blocked` y se identifica el control fallido.
-4. Restaurar ese control y desmarcar `Exclusive authority held`: aparece `Missing` y se bloquea el camino.
-5. Restaurar la autoridad y mover el slider a 60 y 61; el primero pasa y el segundo bloquea.
-6. Abrir `Show sample trace` y volver a ocultarla; los cuatro eventos son estáticos y ficticios.
+1. Iniciar la API Python y Vite según la [guía local](../03-desarrollo/GUIA_LOCAL.md). La pantalla indica si el historial usa PostgreSQL o memoria.
+2. Pulsar **Run paper cycle**. La API devuelve fuentes ficticias REST/WebSocket, dos resultados de agentes, veredicto del revisor, evaluación de holdout, replay, controles y traza. El historial recibe un evento.
+3. Desmarcar **Market data is fresh** y ejecutar otro ciclo: el control de frescura bloquea el camino de papel.
+4. Restaurar frescura y desmarcar **Exclusive authority held**: falta autoridad y el camino se bloquea.
+5. Activar **Context reviewer veto**: el revisor rechaza la entrada candidata; una entrada previamente rechazada nunca se promueve.
+6. Variar **Illustrative exposure** entre 60 y 61: el primero alcanza el límite ficticio y el segundo se bloquea.
 
-No hay rutas de compra, venta o envío de órdenes. La UI no usa feeds de mercado.
+Cada cambio requiere ejecutar el ciclo de nuevo; la UI borra resultados anteriores para no presentarlos como actuales. No hay ruta de órdenes, conexión de cuenta ni estrategia privada. Las métricas no son resultados de mercado real.

@@ -1,5 +1,7 @@
 # SDD 002 · Infraestructura pública de agentes
 
+**Etapa histórica:** esta infraestructura ya participa en el ciclo público conectado del [SDD 003](../003-connected-paper-cycle/sdd.md).
+
 ## Problema y alcance
 
 La consola React 001 no prueba el trabajo con agentes declarado en el CV. Este recorte Python muestra mecanismos adaptados de los agentes privados sin publicar estrategia, señales, prompts ni conexiones de trading.

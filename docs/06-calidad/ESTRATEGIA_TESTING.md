@@ -1,32 +1,25 @@
 # Estrategia de pruebas · Trading System público
 
-La suite comprueba la interfaz ilustrativa y el recorte Python de agentes, no el proyecto de trading privado. Usa Vitest, Testing Library, jsdom y `unittest` estándar.
+La suite comprueba el **ciclo de papel publicado** con Vitest/Testing Library y `unittest`. No certifica el sistema privado ni su aptitud para operar.
 
-| Riesgo de la muestra | Verificación automática |
+| Riesgo | Verificación automática |
 | --- | --- |
-| Confundir elegibilidad con orden real | Estado inicial y `Live orders Disabled`. |
-| Continuar con datos antiguos | Casilla de frescura produce `Blocked`. |
-| Continuar sin autoridad | Casilla de autoridad produce `Missing` y bloqueo. |
-| Error de borde en límite inventado | 60 pasa, 61 bloquea y 0 pasa. |
-| Traza que aparenta ejecución | Se abre y cierra una muestra estática; permanece el texto de que no puede operar. |
-| Fallo parcial del sistema de agentes | Orquestador conserva resultados sanos ante excepción y timeout. |
-| Ruta LLM no ejercitada | Transporte falso comprueba entrada/salida, reintentos, JSON inválido y timeout. |
-| Cruce de memoria entre ciclos | Dos tareas concurrentes no leen el valor de la otra. |
-| Fuente caída o sin datos | Agente sigue con fuente sana y no llama al LLM si no hay titulares. |
-| Modelo intenta promover una entrada rechazada | Revisor no la envía al LLM; veto y revisión manual no se convierten en aprobación. |
-
-## Comandos
+| La UI simula un resultado sin backend | Tests de `App.jsx` y `api.js` comprueban solicitudes, respuesta y error. |
+| Datos de mercado incorrectos o falta parcial | Tests de normalización, REST GET, WebSocket, fuente caída y símbolo incompatible. |
+| Fallo o fuga de contexto entre agentes | Orquestador, memoria por ciclo, timeout y fallos parciales. |
+| Modelo o revisor promueve entrada rechazada | Tests del transporte, JSON, reintentos, veto y rechazo preexistente. |
+| Evaluación usa información futura | Tests de holdout, replay y rechazo de filas posteriores. |
+| Un control fallido permite continuar | Tests de frescura, autoridad, completitud, veto y borde de exposición. |
+| Se pierde auditoría | Prueba de ida y vuelta en PostgreSQL de CI; memoria en local sin base. |
+| Se expone una ruta de orden | Test del contrato HTTP comprueba que no existe. |
 
 ```bash
+python -m unittest discover -s agent_sample -p 'test_*.py' -v
 npm ci
-npm test
 npm run test:coverage
 npm run build
-python -m unittest discover -s agent_sample -p 'test_*.py' -v
 ```
 
-GitHub Actions ejecuta los comandos en push y pull request. El build comprueba que se produce el bundle, y los tests ejercitan controles y resultados del DOM.
+La suite actual contiene **11 pruebas React y 57 Python**. En la última medición local, `App.jsx` y `api.js` alcanzaron 97,77 % de sentencias, 94 % de ramas, 90,9 % de funciones y 100 % de líneas; CI exige mínimos de 75/65/75/75 %. Una prueba Python de PostgreSQL se omite sin `TEST_POSTGRES_DSN` y se ejecuta con el servicio de CI.
 
-La suite contiene **8 casos React y 30 Python**. La medición local con V8 dio 100 % de sentencias, ramas, funciones y líneas instrumentadas de `src/App.jsx`. CI exige al menos 90 % en cada categoría. Ese porcentaje describe únicamente la lógica React de la muestra, no el módulo Python ni la seguridad de un sistema de trading.
-
-**Límites:** los tests Python usan fuentes y transporte falsos. No prueban modelos reales, mercados, concurrencia distribuida, estrategias, ejecución, pérdidas, autenticación o rentabilidad. Ningún test de esta demo puede certificar que el sistema privado sea seguro para operar.
+Los adaptadores de mercado y modelo se prueban con dobles: no se contacta a un exchange ni a Claude en CI. El replay usa observaciones ficticias. Ninguna prueba demuestra rendimiento, rentabilidad, resistencia distribuida o seguridad del sistema privado.

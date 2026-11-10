@@ -1,6 +1,6 @@
 # SDD · Consola pública de controles
 
-**Estado:** implementado. Referencia: `src/App.jsx`. La función `evaluateDemo` es una regla didáctica de la muestra; no representa el algoritmo de riesgo, un contrato de API ni una estrategia privada.
+**Estado:** etapa inicial implementada. El ciclo público conectado actual está descrito en el [SDD 003](../003-connected-paper-cycle/sdd.md). Este texto conserva las decisiones de aquella consola aislada.
 
 ## 1. Arquitectura del repositorio
 

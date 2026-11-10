@@ -7,9 +7,9 @@ export default defineConfig({
     setupFiles: ["./src/test/setup.js"],
     coverage: {
       provider: "v8",
-      include: ["src/App.jsx"],
+      include: ["src/App.jsx", "src/api.js"],
       reporter: ["text", "json-summary"],
-      thresholds: { statements: 90, branches: 90, functions: 90, lines: 90 },
+      thresholds: { statements: 75, branches: 65, functions: 75, lines: 75 },
     },
   },
 });

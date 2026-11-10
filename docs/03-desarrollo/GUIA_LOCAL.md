@@ -1,15 +1,31 @@
 # Guía de desarrollo local
 
-**Requisito:** Node.js 24 y npm. No se necesita exchange, feed de mercado, base de datos, modelo ni archivo `.env`.
+Requisitos: Python 3.11+, Node.js y npm. Docker con Compose permite probar la persistencia PostgreSQL; sin ella, la API declara que usa memoria. No se requieren cuenta de exchange ni clave de modelo.
+
+```bash
+docker compose up -d
+python -m pip install -r requirements-demo.txt
+```
+
+Definir `POSTGRES_DSN=postgresql://postgres:postgres@127.0.0.1:5433/trading_public_demo` en la terminal del servidor y ejecutar:
+
+```bash
+uvicorn agent_sample.api_app:app --host 127.0.0.1 --port 8082
+```
+
+En otra terminal:
 
 ```bash
 npm ci
 npm run dev
-npm test
-npm run build
-npm run preview
 ```
 
-`src/App.jsx` contiene las entradas ficticias, `evaluateDemo` y la traza estática. `src/styles.css` compone la consola adaptable. `src/App.test.jsx` prueba bloqueos, límite y traza; `vitest.config.js` configura jsdom. `src/main.jsx` monta la pantalla.
+Abrir `http://localhost:5173`. Vite reenvía `/api` a FastAPI. El botón ejecuta un ciclo Python con entradas y transporte de modelo ficticios; el resultado y el historial se obtienen desde la API. `exchange.py` ofrece adaptadores REST/WebSocket de **solo lectura**, probados con transportes simulados, pero el escenario de la UI no llama a mercados reales.
 
-Si se cambia el límite ilustrativo, actualizar juntos la etiqueta de la UI, la especificación, el SDD y el test de borde. Nunca reemplazarlo por un parámetro real ni añadir claves o rutas de órdenes al repositorio público.
+```bash
+python -m unittest discover -s agent_sample -p 'test_*.py' -v
+npm run test:coverage
+npm run build
+```
+
+GitHub Actions define `TEST_POSTGRES_DSN` para ejercitar la prueba PostgreSQL. No añadir claves, cuentas, reglas reales o rutas de órdenes al repositorio público.
