@@ -21,6 +21,6 @@ npm run test:coverage
 npm run build
 ```
 
-La suite publica pruebas React y Python para el ciclo conectado y el modelo predictivo sintético. En la última medición local, `App.jsx` y `api.js` alcanzaron 97,77 % de sentencias, 94 % de ramas, 90,9 % de funciones y 100 % de líneas; CI exige mínimos de 75/65/75/75 %. Una prueba Python de PostgreSQL se omite sin `TEST_POSTGRES_DSN` y se ejecuta con el servicio de CI.
+La suite contiene **64 casos Python y 11 casos React** para el ciclo conectado y el modelo predictivo sintético. En la última medición local, `App.jsx` y `api.js` alcanzaron 97,77 % de sentencias, 95 % de ramas, 90,9 % de funciones y 100 % de líneas; CI exige mínimos de 75/65/75/75 %. Un caso Python de PostgreSQL se omite sin `TEST_POSTGRES_DSN` y se ejecuta con el servicio de CI. El [workflow del commit público](https://github.com/juanpablo12398/trading-system-risk-demo/actions/runs/42894009971) terminó correctamente con PostgreSQL.
 
 Los adaptadores de mercado y modelo se prueban con dobles: no se contacta a un exchange ni a Claude en CI. El replay usa observaciones ficticias. Ninguna prueba demuestra rendimiento, rentabilidad, resistencia distribuida o seguridad del sistema privado.
