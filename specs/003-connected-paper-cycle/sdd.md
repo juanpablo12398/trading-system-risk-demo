@@ -2,7 +2,7 @@
 
 ## Propósito y límites
 
-Esta muestra reproduce mecanismos de ingeniería del Trading System privado con datos, respuestas de modelo y umbrales inventados. Los SDD 001 y 002 describen etapas anteriores; este SDD define el recorrido integrado actual. No hay claves, cuentas, señales propietarias, órdenes ni inferencia sobre rentabilidad.
+Esta muestra reproduce mecanismos de ingeniería del Trading System privado con datos, respuestas de modelo y umbrales inventados. Los SDD 001 y 002 describen etapas anteriores; este SDD define el recorrido integrado de esa etapa. El [SDD 004](../004-synthetic-prediction/sdd.md) añade el modelo predictivo sintético. No hay claves, cuentas, señales propietarias, órdenes ni inferencia sobre rentabilidad.
 
 ## Recorrido observable
 
@@ -21,7 +21,7 @@ Esta muestra reproduce mecanismos de ingeniería del Trading System privado con 
 | React/Vite | Escenarios, resultados, métricas y trazas | Operación de cuentas |
 | FastAPI | Contratos de ciclo, modo e historial | Rutas de órdenes |
 | Agentes y memoria | Orquestación asincrónica, contexto y revisión acotada | Agentes y prompts privados |
-| Evaluación y controles | Holdout, replay y bloqueo de muestra | Modelo, estrategia y límites reales |
+| Predicción, evaluación y controles | Modelo sintético, holdout, replay y bloqueo de muestra | Modelo, estrategia y límites reales |
 | PostgreSQL | Historial de eventos ficticios | Registros de operaciones reales |
 
 ## Criterios de aceptación
