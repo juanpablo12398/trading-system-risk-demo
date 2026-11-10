@@ -1,6 +1,9 @@
+import asyncio
 import math
 import unittest
 
+from agent_sample.audit import MemoryAuditStore
+from agent_sample.pipeline import Scenario, run_demo
 from agent_sample.predictive import (
     evaluate_chronological_holdout,
     fit_lag_one,
@@ -34,6 +37,13 @@ class PredictiveSampleTests(unittest.TestCase):
     def test_constant_training_feature_uses_mean_target(self):
         model = fit_lag_one([5.0, 5.0, 5.0, 5.0])
         self.assertEqual(model.predict(5.0), 5.0)
+
+    def test_public_cycle_exposes_predictor_evidence(self):
+        result = asyncio.run(run_demo(Scenario(), MemoryAuditStore()))
+        self.assertEqual(result["prediction"]["model"], "fictional lag-one linear baseline")
+        self.assertEqual(result["prediction"]["training_pairs"], 4)
+        self.assertEqual(result["prediction"]["holdout_samples"], 3)
+        self.assertTrue(any(event["kind"] == "Prediction" for event in result["trace"]))
 
     def test_rejects_short_and_nonfinite_inputs(self):
         with self.assertRaises(ValueError):
