@@ -15,6 +15,8 @@ npm install
 npm run dev
 ```
 
+Run `npm test` for the published React behavior and `npm run build` for a production bundle check. The [documentation index](docs/00-indice/INDICE.md) contains the public specification, SDD, decisions, walkthrough and test strategy. These tests do not verify the private engine, market data or exchange adapters.
+
 ## What to inspect
 
 - `src/App.jsx`: pure illustrative control evaluation, state driven gates and conditional trace.
