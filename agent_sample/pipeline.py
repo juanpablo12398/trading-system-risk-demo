@@ -71,6 +71,10 @@ async def run_demo(
         exposure=scenario.exposure,
         complete_data=market["complete"],
         review_kept="FICTIONAL-CANDIDATE" in reviewer["kept_ids"],
+        model_validated=(
+            prediction["holdout_samples"] >= 3
+            and prediction["mae"] <= prediction["persistence_mae"]
+        ),
     )
     trace = [
         {"kind": "Input", "message": "Fictional REST and WebSocket snapshots normalized"},
