@@ -15,9 +15,12 @@ La suite comprueba **la interfaz ilustrativa**, no el proyecto de trading privad
 ```bash
 npm ci
 npm test
+npm run test:coverage
 npm run build
 ```
 
 GitHub Actions ejecuta los comandos en push y pull request. El build comprueba que se produce el bundle, y los tests ejercitan controles y resultados del DOM.
+
+La suite actual contiene **8 casos**. La medición local con V8 dio 100 % de sentencias, ramas, funciones y líneas instrumentadas de `src/App.jsx`. CI exige al menos 90 % en cada categoría. Ese porcentaje describe únicamente la lógica React de la muestra, no la seguridad de un sistema de trading.
 
 **Límites:** no se prueban modelos, mercados, concurrencia distribuida, estrategias, ejecución, pérdidas, autenticación o rentabilidad. Ningún test de esta demo puede certificar que el sistema privado sea seguro para operar.

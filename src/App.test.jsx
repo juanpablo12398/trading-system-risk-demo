@@ -51,4 +51,38 @@ describe("Trading System public risk demo", () => {
     expect(screen.queryByText("Synthetic cycle received")).not.toBeInTheDocument();
     expect(screen.getByText(/cannot trade/)).toBeInTheDocument();
   });
+
+  test("multiple failed controls are all shown while decision remains blocked", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("checkbox", { name: "Market data is fresh" }));
+    await user.click(screen.getByRole("checkbox", { name: "Exclusive authority held" }));
+    fireEvent.change(screen.getByRole("slider", { name: "Illustrative exposure" }), {
+      target: { value: "100" },
+    });
+    expect(screen.getAllByText("BLOCK")).toHaveLength(3);
+    expect(screen.getByText("Fail closed: demo path stopped")).toBeInTheDocument();
+    expect(screen.getByText("Disabled")).toBeInTheDocument();
+  });
+
+  test("restoring controls returns to simulation eligibility", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    const freshness = screen.getByRole("checkbox", { name: "Market data is fresh" });
+    await user.click(freshness);
+    expect(screen.getByText("Blocked")).toBeInTheDocument();
+    await user.click(freshness);
+    expect(screen.getByText("Eligible for simulation")).toBeInTheDocument();
+    expect(screen.getAllByText("PASS")).toHaveLength(3);
+  });
+
+  test("opening a static trace does not change a blocked decision", async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByRole("checkbox", { name: "Market data is fresh" }));
+    await user.click(screen.getByRole("button", { name: "Show sample trace" }));
+    expect(screen.getByText("Synthetic cycle received")).toBeInTheDocument();
+    expect(screen.getByText("Blocked")).toBeInTheDocument();
+    expect(screen.getByText("Disabled")).toBeInTheDocument();
+  });
 });
